@@ -6,8 +6,8 @@
 
 # Get initial information from user:
 initAssetValue = int(input('Enter asset value: '))
-putStrikePrice = int(input('Enter strike price of put option: '))
-putCost = int(input('Enter put option cost: '))
+callStrikePrice = int(input('Enter strike price of call option: '))
+callCost = int(input('Enter call option cost: '))
 riskFreeIR = int(input('Enter risk-free interest rate (%): '))
 # convert percentage to decimal:
 riskFreeIR = riskFreeIR/100
@@ -16,21 +16,22 @@ while True:
     # get current asset price
     currAssetPrice = int(input('\nEnter current asset price: '))
 
-    # if current price is greater than put strike, don't exercise
-    if((currAssetPrice - putStrikePrice) >= 0):
+    # if current price is less than call strike, don't exercise
+    if((currAssetPrice - callStrikePrice) <= 0):
         # payoff is simply the current price since we don't exercise
-        payoff = currAssetPrice
+        # (although negative since we must sell for that price)
+        payoff = -1*currAssetPrice
 
         # calculate profit, factoring in intial invcestment and  put cost future value
-        profit = currAssetPrice - (initAssetValue + putCost)*(1 + riskFreeIR)
+        profit = payoff - (-1*callStrikePrice + callCost)*(1 + riskFreeIR)
 
     # if current price is LESS than initial price, we exercise the put
     else:
         # payoff is the put strike price
-        payoff = putStrikePrice
+        payoff = -1*callStrikePrice
 
         # profit
-        profit = putStrikePrice - (initAssetValue + putCost)*(1 + riskFreeIR)
+        profit = payoff - (-1*initAssetValue + callCost)*(1 + riskFreeIR)
     
     print('Payoff: ' + str(payoff) + ' Profit: ' + str(profit))
 
@@ -38,4 +39,4 @@ while True:
     if(input('\nTry another price? (y/n): ') == 'n'):
         break
 
-print(riskFreeIR)
+print('\nClosed program.')
